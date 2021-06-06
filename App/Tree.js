@@ -1,11 +1,9 @@
-
-class Tree{
+class Tree {
     #depth
     #rootNode;
     constructor(){
         this.#depth = -1;
         this.#rootNode = null;
-        this.initialize = true;
     }
     get depth(){
         return this.#depth;
@@ -20,3 +18,4 @@ class Tree{
         this.#depth = _depth;
     }
 }
+
