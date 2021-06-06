@@ -8,6 +8,10 @@ class BinaryTree extends Tree{
         this.#leftChild = null;
         this.#rightChild = null;
     }
+    numderOfChilds(){
+        let childCount = this.#leftChild ? 1 : 0 +  this.#rightChild ? 1 : 0;
+        return childCount;
+    }
 
     get rightChild(){
         return this.#rightChild;
