@@ -146,7 +146,7 @@ class BinarySearchTree extends BinaryTree{
                     this.leftChild.increaseDepth(depthIncreaseAmount);    
                     inorderSuccessor.leftChild = this.leftChild;
                     this.leftChild.parent = inorderSuccessor;  
-                    if(this.depth == 0){
+                    if(this.parent == null){
                         this.rootNode = this.rightChild.rootNode;
                         this.leftChild = this.rightChild.leftChild;
                         this.rightChild = this.rightChild.rightChild;
@@ -176,5 +176,6 @@ class BinarySearchTree extends BinaryTree{
                 return -1;
             }
         }
+
     }  
 }  
