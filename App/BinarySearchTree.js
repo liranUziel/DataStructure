@@ -58,14 +58,14 @@ class BinarySearchTree extends BinaryTree{
             return -1;
         }
         if(this.rootNode.value == _value){
-            return 'found';
+            return {'depth':this.depth};
         }
         if(this.rootNode.value > _value){
             if(this.leftChild){
                 return this.leftChild.searchNode(_value);
             }else{
                 console.error(`${_value} is not excited`);
-                return -1;
+                return {'depth':-1};
             }
         }
         if(this.rootNode.value < _value){
@@ -114,47 +114,47 @@ class BinarySearchTree extends BinaryTree{
         if(this.rootNode.value == _value){
             //This point on the node to remove
             let childCount  = this.numderOfChilds();
-            let parentSide;
+            let childParentSide;
+            if(this.parent != null){
+                if(this.parent.leftChild){
+                    childParentSide = this.parent.leftChild.rootNode.value == this.rootNode.value ? 'left' : 'right';
+                }else{
+                    childParentSide = 'right';
+                }
+                
+            }    
             switch(childCount){
                 case 0:
-                    if(this.parent != null){
-                        parentSide = this.parent.leftChild.rootNode.value == this.rootNode.value ? 'left' : 'right';
-                        this.rootNode = null;
-                    }
-                    if(parentSide == 'left'){//can be shorten
-                        this.parent.leftChild = null;
-                    }else{
-                        this.parent.rightChild = null;    
+                    this.rootNode = null;
+                    if(childParentSide){
+                        this.parent.leftChild == 'left' ? this.parent.leftChild = null : this.parent.rightChild = null;   
                     }
                     break;
                 case 1:
                     let childNode = this.leftChild != null ? this.leftChild : this.rightChild;
-                    if(this.parent != null){
-                        parentSide = this.parent.leftChild.rootNode.value == this.rootNode.value ? 'left' : 'right';
-                        this.rootNode = childNode;
-                    }
-                    if(parentSide == 'left'){//can be shorten
-                        this.parent.leftChild = childNode;
-                    }else{
-                        this.parent.rightChild = childNode;    
-                    }
+                    this.rootNode = childNode;
+                    //need to fix
+                    childParentSide == 'left' ? this.parent.leftChild = childNode : this.parent.rightChild = childNode;   
                     break;
                 case 2:
-                    let inorderSuccessor = this.leftChild.findMinimumNode();
+                    let inorderSuccessor = this.rightChild.findMinimumNode();
                     if(this.parent != null){
-                        parentSide = this.parent.leftChild.rootNode.value == this.rootNode.value ? 'left' : 'right';
-                    }       
-                    if(parentSide == 'left'){//can be shorten
-                        if(this.depth != 0){
-                            //maybe works
-                            let depthIncreaseAmount = inorderSuccessor.leftChild.depth - this.leftChild.depth;
-                            this.leftChild.increaseDepth(depthIncreaseAmount);
-                            //maybe works
-                            this.parent.leftChild = this.leftChild;
-                        }
-                        inorderSuccessor.leftChild = this.rightChild;
+                        childParentSide = this.parent.leftChild.rootNode.value == this.rootNode.value ? 'left' : 'right';
+                    } 
+                    this.rightChild.increaseDepth(-1);
+                    let depthIncreaseAmount = inorderSuccessor.depth - this.leftChild.depth + 1;
+                    this.leftChild.increaseDepth(depthIncreaseAmount);    
+                    inorderSuccessor.leftChild = this.leftChild;
+                    this.leftChild.parent = inorderSuccessor;  
+                    if(this.depth == 0){
+                        this.rootNode = this.rightChild.rootNode;
+                        this.leftChild = this.rightChild.leftChild;
+                        this.rightChild = this.rightChild.rightChild;
+                        this.parent = null;
+                    }else if(childParentSide == 'left'){
+                        this.parent.leftChild = this.rightChild;
                     }else{
-                        
+                        this.parent.rightChild = this.rightChild;
                     }
                     break;        
             }
