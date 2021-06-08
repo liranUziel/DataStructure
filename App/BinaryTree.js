@@ -7,20 +7,19 @@ class BinaryTree extends Tree{
         this.initialize = true;
         this.#leftChild = null;
         this.#rightChild = null;
+        //adding to draw
         this.gap = 100;//+ (40*this.depth);
         this.line = 50;
     }
 
-    /*
-    draw on screen
-    */
+    //adding to draw
     initDraw(_pos){
         this.maxDapth = this.setDepthTree;
         //this.gap = 40* this.maxDapth;
         let pos = {'x':_pos.x,'y':_pos.y};
         this.setPos(pos);   
     }
-
+    //adding to draw
     setPos(_pos,_side){
         if(this.isNodeLeaf()){
             this.pos = {'x':_pos.x,'y':_pos.y};
@@ -35,11 +34,16 @@ class BinaryTree extends Tree{
         }
         
     }
+
     setDepthTree(_depth){
         let depth = _depth || 0;
         this.depth = depth;
-        this.#leftChild.setDepthTree(depth + 1);
-        this.#rightChild.setDepthTree(depth + 1);
+        if(this.#leftChild){
+            this.#leftChild.setDepthTree(depth + 1);
+        }
+        if(this.#rightChild){
+            this.#rightChild.setDepthTree(depth + 1);
+        }
     }
     lenght(){
         if(this.isNodeLeaf()){
@@ -50,7 +54,6 @@ class BinaryTree extends Tree{
 
         return leftChildsCount + rightChildsCount + 1;
     }
-
     isNodeLeaf(){
         return this.#leftChild == null && this.#rightChild == null;
     }
@@ -62,14 +65,11 @@ class BinaryTree extends Tree{
         let maxRight = this.#rightChild != null ? this.#rightChild.getMaxDepthTree() : -1;  
         return ((maxLeft + maxRight) + Math.abs(maxLeft - maxRight))/2;
     }
-
-
     numderOfChilds(){
         let childCount = this.#leftChild ? 1 : 0;
         childCount += this.#rightChild ? 1 : 0;
         return childCount;
     }
-
     get rightChild(){
         return this.#rightChild;
     }

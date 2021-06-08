@@ -1,4 +1,9 @@
 class BinarySearchTree extends BinaryTree{
+    /**
+    * Represents a Binary Search Tree (BST).
+    * @alias BTS
+    * @constructor
+    */
     constructor(){
         super();
     }
@@ -12,13 +17,20 @@ class BinarySearchTree extends BinaryTree{
         }
         return BST;
     }
-
+    /**
+     * @function addNode adding a new node to the tree (this), finding the loction (the leaf)
+     * to add the new node with the right value;
+     * @param _value the value to add to the tree.
+     * @param _depth use to find the current depth in the search for the loction 
+     * i.e value 4 add under leaf with value 3 and depth 1 there for the new loction depth is 2.
+     */
     addNode(_value,_depth){
         if(this.isEmpty()){
             let node = new Node(_value);
             this.rootNode = node;
             this.depth = _depth || 0;
-        }else{
+        }
+        else{
             if(this.rootNode.value > _value){
                 if(!this.leftChild){
                     this.leftChild = new BinarySearchTree();
@@ -34,6 +46,70 @@ class BinarySearchTree extends BinaryTree{
             }
         }
     }
+    /**
+     * @function removeNode removing node with the value from the tree (this), by finding the loction 
+     * of the node to remove. remove the node and fix the tree by finding the 'inorderSuccessor'
+     * @param _value the value to add to the tree.
+     * @returns returning the value that was remove or -1 if not found
+     */
+    removeNode(_value){
+        if(this.isEmpty()){
+            console.error('the tree is empty');
+            return -1;
+        }
+        //find the pointer to remove the node;
+        let nodeToRemove = this.searchNode(_value)["pointer"];
+        if(!nodeToRemove){
+            console.error(`${_value} not found in the tree`);
+            return -1;
+        }
+        let returnValue = nodeToRemove.rootNode.value;
+        let childCount  = nodeToRemove.numderOfChilds();
+        let childParentSide;
+        if(nodeToRemove.parent != null){
+            if(nodeToRemove.parent.leftChild){
+                childParentSide = nodeToRemove.parent.leftChild.rootNode.value == nodeToRemove.rootNode.value ? 'left' : 'right';
+            }else{
+                childParentSide = 'right';
+            }
+            
+        }    
+        switch(childCount){
+            case 0:
+                nodeToRemove.rootNode = null;
+                if(childParentSide){
+                    nodeToRemove.parent.leftChild == 'left' ? nodeToRemove.parent.leftChild = null : nodeToRemove.parent.rightChild = null;   
+                }
+                break;
+            case 1:
+                let childNode = nodeToRemove.leftChild != null ? nodeToRemove.leftChild : nodeToRemove.rightChild;
+                this.rootNode = childNode;
+                //need to fix
+                childParentSide == 'left' ? nodeToRemove.parent.leftChild = childNode : nodeToRemove.parent.rightChild = childNode;   
+                break;
+            case 2:
+                let inorderSuccessor = nodeToRemove.rightChild.findMinimumNode();
+                if(nodeToRemove.parent != null){
+                    childParentSide = nodeToRemove.parent.leftChild.rootNode.value == nodeToRemove.rootNode.value ? 'left' : 'right';
+                } 
+                inorderSuccessor.leftChild = nodeToRemove.leftChild;
+                nodeToRemove.leftChild.parent = inorderSuccessor;  
+                if(nodeToRemove.parent == null){
+                    nodeToRemove.rootNode = nodeToRemove.rightChild.rootNode;
+                    nodeToRemove.leftChild = nodeToRemove.rightChild.leftChild;
+                    nodeToRemove.rightChild = nodeToRemove.rightChild.rightChild;
+                    nodeToRemove.parent = null;
+                }else if(childParentSide == 'left'){
+                    nodeToRemove.parent.leftChild = nodeToRemove.rightChild;
+                }else{
+                    nodeToRemove.parent.rightChild = nodeToRemove.rightChild;
+                }
+                break;        
+        }
+        console.log(this);
+        this.setDepthTree();
+        return returnValue; 
+    }  
     sortPrint(){
         if(this.isEmpty()){
             console.error('the tree is empty');
@@ -58,7 +134,7 @@ class BinarySearchTree extends BinaryTree{
             return -1;
         }
         if(this.rootNode.value == _value){
-            return {'depth':this.depth};
+            return {'depth':this.depth,'pointer':this};
         }
         if(this.rootNode.value > _value){
             if(this.leftChild){
@@ -77,7 +153,6 @@ class BinarySearchTree extends BinaryTree{
             }
         }
     }
-
     findMinimumNode(){
         if(this.isEmpty()){
             console.error('the tree is empty');
@@ -105,77 +180,4 @@ class BinarySearchTree extends BinaryTree{
             this.rightChild.increaseDepth();
          }
     }
-    //TODO: need to find a way to get the parent
-    removeNode(_value){
-        if(this.isEmpty()){
-            console.error('the tree is empty');
-            return -1;
-        }
-        if(this.rootNode.value == _value){
-            //This point on the node to remove
-            let childCount  = this.numderOfChilds();
-            let childParentSide;
-            if(this.parent != null){
-                if(this.parent.leftChild){
-                    childParentSide = this.parent.leftChild.rootNode.value == this.rootNode.value ? 'left' : 'right';
-                }else{
-                    childParentSide = 'right';
-                }
-                
-            }    
-            switch(childCount){
-                case 0:
-                    this.rootNode = null;
-                    if(childParentSide){
-                        this.parent.leftChild == 'left' ? this.parent.leftChild = null : this.parent.rightChild = null;   
-                    }
-                    break;
-                case 1:
-                    let childNode = this.leftChild != null ? this.leftChild : this.rightChild;
-                    this.rootNode = childNode;
-                    //need to fix
-                    childParentSide == 'left' ? this.parent.leftChild = childNode : this.parent.rightChild = childNode;   
-                    break;
-                case 2:
-                    let inorderSuccessor = this.rightChild.findMinimumNode();
-                    if(this.parent != null){
-                        childParentSide = this.parent.leftChild.rootNode.value == this.rootNode.value ? 'left' : 'right';
-                    } 
-                    this.rightChild.increaseDepth(-1);
-                    let depthIncreaseAmount = inorderSuccessor.depth - this.leftChild.depth + 1;
-                    this.leftChild.increaseDepth(depthIncreaseAmount);    
-                    inorderSuccessor.leftChild = this.leftChild;
-                    this.leftChild.parent = inorderSuccessor;  
-                    if(this.parent == null){
-                        this.rootNode = this.rightChild.rootNode;
-                        this.leftChild = this.rightChild.leftChild;
-                        this.rightChild = this.rightChild.rightChild;
-                        this.parent = null;
-                    }else if(childParentSide == 'left'){
-                        this.parent.leftChild = this.rightChild;
-                    }else{
-                        this.parent.rightChild = this.rightChild;
-                    }
-                    break;        
-            }
-            return this.rootNode.value;
-        }
-        if(this.rootNode.value > _value){
-            if(this.leftChild){
-                return this.leftChild.removeNode(_value);
-            }else{
-                console.error(`${_value} is not excited`);
-                return -1;
-            }
-        }
-        if(this.rootNode.value < _value){
-            if(this.rightChild){
-                return this.rightChild.removeNode(_value);
-            }else{
-                console.error(`${_value} is not excited`);
-                return -1;
-            }
-        }
-
-    }  
 }  

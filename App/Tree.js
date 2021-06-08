@@ -1,4 +1,4 @@
-class Tree {
+class Tree{
     #depth
     #rootNode;
     #parent;
@@ -7,6 +7,7 @@ class Tree {
         this.#rootNode = null;
         this.#parent = null;
     }
+    
     get depth(){
         return this.#depth;
     }
@@ -25,5 +26,6 @@ class Tree {
     set parent(_parent){
         this.#parent = _parent;
     }
+    
 }
 
