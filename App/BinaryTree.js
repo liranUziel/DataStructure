@@ -1,84 +1,85 @@
+
 class BinaryTree extends Tree{
-    //uniqe to binary tree;
     #leftChild;
     #rightChild;
     constructor(){
         super();
+        this.initialize = true;
         this.#leftChild = null;
         this.#rightChild = null;
+        //adding to draw
+        this.gap = 100;//+ (40*this.depth);
+        this.line = 50;
     }
-    isEmpty(){
-        return this.rootNode  == null;
-    }
-    addNode(_value,_depth){
-        if(this.isEmpty()){
-            let node = new Node(_value);
-            this.rootNode = node;
-            this.depth = _depth || 0;
-        }else{
-            if(this.rootNode.value > _value){
-                if(!this.#leftChild){
-                    this.#leftChild = new BinaryTree();
-                }
-                this.#leftChild.addNode(_value,this.depth+1);
-            }else{
-                if(!this.#rightChild){
-                    this.#rightChild = new BinaryTree();
-                }
-                this.#rightChild.addNode(_value,this.depth+1);
-            }
-        }
-    }
-    sortPrint(){
-        if(this.isEmpty()){
-            console.error('the tree is empty');
-            return -1;
-        }
-        if(!this.#leftChild){
-            return this.rootNode.value;
-        }
-        let sortArray = [];
-        sortArray.concat(this.#leftChild.sortPrint());
-        //sortArray.push(this.rootNode.value);
-        return sortArray;
 
+    //adding to draw
+    initDraw(_pos){
+        this.maxDapth = this.setDepthTree;
+        //this.gap = 40* this.maxDapth;
+        let pos = {'x':_pos.x,'y':_pos.y};
+        this.setPos(pos);   
     }
-    searchNode(_value){
-        if(this.isEmpty()){
-            console.error('the tree is empty');
-            return -1;
+    //adding to draw
+    setPos(_pos,_side){
+        if(this.isNodeLeaf()){
+            this.pos = {'x':_pos.x,'y':_pos.y};
+            return;
         }
-        if(this.rootNode.value == _value){
-            return 'found';
+        this.pos = {'x':_pos.x,'y':_pos.y};
+        if(this.#leftChild != null){
+            this.#leftChild.setPos({'x':_pos.x - this.gap,'y':_pos.y + this.line},1);
         }
-        if(this.rootNode.value > _value){
-            if(this.#leftChild){
-                this.#leftChild.searchNode(_value);
-            }else{
-                console.error(`${_value} is not excited`);
-                return -1;
-            }
+        if(this.#rightChild != null){
+            this.#rightChild.setPos({'x':_pos.x + this.gap,'y':_pos.y + this.line},-1);
         }
-        if(this.rootNode.value < _value){
-            if(this.#rightChild){
-                this.#rightChild.searchNode(_value);
-            }else{
-                console.error(`${_value} is not excited`);
-                return -1;
-            }
+        
+    }
+
+    setDepthTree(_depth){
+        let depth = _depth || 0;
+        this.depth = depth;
+        if(this.#leftChild){
+            this.#leftChild.setDepthTree(depth + 1);
+        }
+        if(this.#rightChild){
+            this.#rightChild.setDepthTree(depth + 1);
         }
     }
-    removeNode(_value){
-        if(this.rootNode.value == _value){
-            /// a lot of code.
+    lenght(){
+        if(this.isNodeLeaf()){
+            return 1;
         }
-        else{
-            if(_value < this.rootNode.value){
-                this.#leftChild.removeNode(_value);
-            }
-            else{
-                this.#rightChild.removeNode(_value);
-            }
+        let leftChildsCount = this.#leftChild != null ? this.#leftChild.lenght() : 0;    
+        let rightChildsCount = this.#rightChild != null ? this.#rightChild.lenght() : 0;
+
+        return leftChildsCount + rightChildsCount + 1;
+    }
+    isNodeLeaf(){
+        return this.#leftChild == null && this.#rightChild == null;
+    }
+    getMaxDepthTree(){
+        if(this.isNodeLeaf()){
+            return this.depth;
         }
-    }  
-}  
+        let maxLeft = this.#leftChild != null ? this.#leftChild.getMaxDepthTree() : -1;    
+        let maxRight = this.#rightChild != null ? this.#rightChild.getMaxDepthTree() : -1;  
+        return ((maxLeft + maxRight) + Math.abs(maxLeft - maxRight))/2;
+    }
+    numderOfChilds(){
+        let childCount = this.#leftChild ? 1 : 0;
+        childCount += this.#rightChild ? 1 : 0;
+        return childCount;
+    }
+    get rightChild(){
+        return this.#rightChild;
+    }
+    get leftChild(){
+        return this.#leftChild;
+    }
+    set leftChild(_subTree){
+        this.#leftChild = _subTree;
+    }
+    set rightChild(_subTree){
+        this.#rightChild = _subTree;
+    }
+}
