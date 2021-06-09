@@ -48,7 +48,6 @@ class LinkList{
         }
         return found != false ? found : -1;
     }
-
     linkFromArray(_array){
         let lenght = _array.length;
         for(let i = 0;i < lenght;i++){

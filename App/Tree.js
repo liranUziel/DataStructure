@@ -1,14 +1,18 @@
-
 class Tree{
     #depth
     #rootNode;
+    #parent;
     constructor(){
         this.#depth = -1;
         this.#rootNode = null;
-        this.initialize = true;
+        this.#parent = null;
     }
+    
     get depth(){
         return this.#depth;
+    }
+    get parent(){
+        return this.#parent;
     }
     get rootNode(){
         return this.#rootNode;
@@ -19,4 +23,9 @@ class Tree{
     set depth(_depth){
         this.#depth = _depth;
     }
+    set parent(_parent){
+        this.#parent = _parent;
+    }
+    
 }
+
