@@ -1,6 +1,7 @@
 class DoubleLinkList extends LinkList{
     constructor(){
         super();
+        //
     }
     addNode(_value){
         let newNode = new Node(_value);
