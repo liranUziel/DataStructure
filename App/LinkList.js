@@ -36,6 +36,18 @@ class LinkList{
             return LinkList.lastFreeNode(_node.#nextNode);
         }
     }
+    findNode(_value){
+        let currentNode = this;
+        let found = false;
+        while(currentNode.#nextNode != null){
+            currentNode = currentNode.#nextNode;
+            if(currentNode.Node.value == _value)
+            {
+                found = currentNode;
+            }
+        }
+        return found != false ? found : -1;
+    }
     linkFromArray(_array){
         let lenght = _array.length;
         for(let i = 0;i < lenght;i++){
@@ -53,7 +65,7 @@ class LinkList{
         let respos = '';
         let currentNode = this;
         respos += `M->`;
-        while(currentNode.#nextNode != null){
+        while(currentNode.#nextNode != null && currentNode.#nextNode.#Node != 'manage' ){
             currentNode = currentNode.#nextNode;
             respos += `->${currentNode.Node.value}`;
         }
