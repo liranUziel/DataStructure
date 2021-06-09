@@ -7,10 +7,6 @@ class LinkList{
         this.#nextNode = null;
         this.#previousNode = null;
     }
-
-    get previousNode(){
-        return this.#previousNode; 
-    }    
     get Node(){
         return this.#Node; 
     }
@@ -19,23 +15,35 @@ class LinkList{
     }
     get previousNode(){
         return this.#previousNode; 
+    }   
+    get previousNode(){
+        return this.#previousNode; 
     } 
     set Node(_node){
         this.#Node = _node;
     }
-    set Node(_nextNode){
+    set nextNode(_nextNode){
         this.#nextNode = _nextNode;
     }
-    set Node(_previousNode){
+    set previousNode(_previousNode){
         this.#previousNode = _previousNode;
     }
-    static lastFreeNode(_node){
-        if(_node.#nextNode == null){
+    static lastNode(_node){
+        if(_node.#nextNode == null || _node.#nextNode.#Node == 'manage'){
             return _node;
         }else{
-            return LinkList.lastFreeNode(_node.#nextNode);
+            return LinkList.lastNode(_node.#nextNode);
         }
     }
+    static ListFromArray(_array,_classType){
+        let lenght = _array.length;
+        let list = new  LinkList();
+        for(let i = 0;i < lenght;i++){
+            list.addNode(_array[i]);
+        }
+        return list;
+    }
+
     findNode(_value){
         let currentNode = this;
         let found = false;
@@ -48,17 +56,12 @@ class LinkList{
         }
         return found != false ? found : -1;
     }
-    linkFromArray(_array){
-        let lenght = _array.length;
-        for(let i = 0;i < lenght;i++){
-            this.addNode(_array[i]);
-        }
-    }
+  
     addNode(_value){
         let newNode = new Node(_value);
         let LinkedNode = new LinkList;
         LinkedNode.#Node = newNode;
-        let lastNode = LinkList.lastFreeNode(this);
+        let lastNode = LinkList.lastNode(this);
         lastNode.#nextNode = LinkedNode;
     }
     printList(){
